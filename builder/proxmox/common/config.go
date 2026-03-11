@@ -178,6 +178,9 @@ type Config struct {
 	// Description of the template, visible in
 	// the Proxmox interface.
 	TemplateDescription string `mapstructure:"template_description"`
+	// Skip converting the VM to a template on completion of build.
+	// Defaults to `true`
+	SkipConvertToTemplate bool `mapstructure:"skip_convert_to_template"`
 
 	// If true, add an empty Cloud-Init CDROM drive after the virtual
 	// machine has been converted to a template. Defaults to `false`.
@@ -582,6 +585,8 @@ type pciDeviceConfig struct {
 func (c *Config) Prepare(upper interface{}, raws ...interface{}) ([]string, []string, error) {
 	// Do not add a cloud-init cdrom by default
 	c.CloudInit = false
+	// Skip converting to template by default
+	c.SkipConvertToTemplate = true
 	var md mapstructure.Metadata
 	err := config.Decode(upper, &config.DecodeOpts{
 		Metadata:           &md,
